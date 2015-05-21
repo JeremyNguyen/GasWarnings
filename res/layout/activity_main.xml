@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.cgi.activities.MainActivity" >
+    
+    <TextView
+        android:id="@+id/activity_main_tv_welcome"
+        android:text="@string/activity_main_welcome"
+        android:textSize="50sp"
+        android:gravity="center_horizontal"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+    
+    <ImageView 
+        android:id="@+id/activity_main_iv"
+        android:src="@drawable/danger_gas"
+        android:contentDescription="@string/activity_main_iv_desc"
+        android:layout_below="@id/activity_main_tv_welcome"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    
+    <LinearLayout 
+        android:orientation="vertical"
+        android:layout_below="@id/activity_main_iv"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+		<Button 
+        	android:id="@+id/activity_main_button_service"
+        	android:text="@string/activity_main_service_turnOn"
+			android:background="@drawable/green_button"
+			style="@style/ButtonText"
+			android:layout_weight="1"
+        	/>
+    
+    	<Button 
+        	android:id="@+id/activity_main_button_list"
+        	android:text="@string/activity_main_list"
+        	android:background="@drawable/yellow_button"
+        	style="@style/ButtonText"
+        	android:layout_weight="1"
+       		/>
+    
+    	<Button
+        	android:id="@+id/activity_main_button_data"
+        	android:text="@string/activity_main_data"
+        	android:background="@drawable/blue_button"
+        	style="@style/ButtonText"
+        	android:layout_weight="1"
+        	/>
+        
+        
+    </LinearLayout> 
+
+</RelativeLayout>

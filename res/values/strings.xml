@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Gas Warnings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="activity_main_welcome">Gas Warnings</string>
+    <string name="activity_main_service_turnOn">Start notification service</string>
+    <string name="activity_main_service_turnOff">Stop notification service</string>
+    <string name="activity_main_list">Warnings history</string>
+    <string name="activity_main_iv_desc">danger_gas.jpg</string>
+    <string name="activity_main_data">Graphics</string>
+    <string name="title_activity_graphs">Graphics</string>
+    <string name="title_activity_warnings">Warnings history</string>
+    <string name="activity_graphs_graph_title">Temperature &amp; Gas</string>
+    <string name="activity_graphs_update_ON">Live : ON&#160;</string>
+    <string name="activity_graphs_update_OFF">Live : OFF</string>
+    <string name="activity_graphs_menu_create">Database : create tables</string>
+    <string name="activity_graphs_menu_drop">Database : drop tables</string>
+    <string name="activity_graphs_menu_random">Database : add random entry</string>
+    <string name="activity_graphs_secondYAxis_title">Gas</string>
+
+</resources>

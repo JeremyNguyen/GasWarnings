@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.cgi.gaswarnings.MainActivity" >
+
+    <item 
+        android:id="@+id/activity_main_menu_random"
+        android:title="@string/activity_graphs_menu_random"/>
+  	<item 
+       	android:id="@+id/activity_main_menu_create"
+        android:title="@string/activity_graphs_menu_create"/>
+  	<item 
+        android:id="@+id/activity_main_menu_drop"
+        android:title="@string/activity_graphs_menu_drop"/>
+    
+</menu>
