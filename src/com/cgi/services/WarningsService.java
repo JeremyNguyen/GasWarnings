@@ -108,6 +108,7 @@ public class WarningsService extends Service {
 				gas = Float.parseFloat(line.substring(6));
 			}
 		}
+		Log.d("SERVICE","RECEIVED "+temperature+"/"+gas);
 		Entry e = new Entry(temperature, gas);
 		// TODO : try not to open and close
 		entryDAO.open();

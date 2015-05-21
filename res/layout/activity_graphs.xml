@@ -44,21 +44,22 @@
         android:layout_below="@id/activity_graphs_top_layout">
 		
     	<com.jjoe64.graphview.GraphView
-        android:id="@+id/activity_graphs_graph"
-       	android:layout_width="0dp"
-       	android:layout_height="fill_parent"
-       	android:layout_weight="0.8"
+        	android:id="@+id/activity_graphs_graph"
+       		android:layout_width="0dp"
+       		android:layout_height="fill_parent"
+       		android:layout_weight="0.8"
        	/>
     	
     	<TextView
-    	    android:id="@+id/activity_graphs_secondYaxis_title"
+    		android:id="@+id/activity_graphs_secondYaxis_title"
     	    android:layout_width="55dp"
     	    android:gravity="center"
     	    android:layout_height="fill_parent"
     	    android:rotation="90"
     	    android:layout_marginRight="15dp"
     	    android:text="@string/activity_graphs_secondYAxis_title"
-    	    android:textSize="30sp" />
+    	    android:textSize="30sp" 
+   		/>
         
     </LinearLayout>
 

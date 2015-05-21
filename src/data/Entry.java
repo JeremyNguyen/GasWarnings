@@ -61,4 +61,10 @@ public class Entry implements Comparable<Entry> {
 		return this.date.compareTo(e.getDate());
 	}
 	
+	@Override
+	public boolean equals(Object o){
+		Entry e = (Entry) o;
+		return this.compareTo(e) == 0;
+	}
+	
 }

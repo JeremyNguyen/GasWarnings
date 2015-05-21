@@ -15,9 +15,9 @@
     <string name="activity_graphs_graph_title">Temperature &amp; Gas</string>
     <string name="activity_graphs_update_ON">Live : ON&#160;</string>
     <string name="activity_graphs_update_OFF">Live : OFF</string>
-    <string name="activity_graphs_menu_create">Database : create tables</string>
-    <string name="activity_graphs_menu_drop">Database : drop tables</string>
-    <string name="activity_graphs_menu_random">Database : add random entry</string>
+    <string name="activity_main_menu_create">Database : create tables</string>
+    <string name="activity_main_menu_drop">Database : drop tables</string>
+    <string name="activity_main_menu_random">Database : add random entry</string>
     <string name="activity_graphs_secondYAxis_title">Gas</string>
 
 </resources>

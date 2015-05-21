@@ -50,7 +50,7 @@ public class GraphsActivity extends Activity {
 	boolean update_state = false;
 	
 	EntryDAO dao;
-	Vector<Entry> entries;
+	Vector<Entry> entries = new Vector<Entry>();
 	LineGraphSeries<DataPoint> series1, series2;
 	int values_count;
 	DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
@@ -94,6 +94,7 @@ public class GraphsActivity extends Activity {
 			}
 		});
 		
+		/* drawing graph */
 		drawGraph();
         
         /* start updating service if the warnings service is on */
@@ -106,9 +107,7 @@ public class GraphsActivity extends Activity {
 		
 		/* fecthing data */
 		dao = new EntryDAO(this);
-		dao.open();
-		entries = dao.selectAll();
-		dao.close();
+		refreshData();
 		
 		/* SERIES */
 		
@@ -237,18 +236,22 @@ public class GraphsActivity extends Activity {
 			@Override
 			public void run() {
 				
-				Vector<Entry> copy = new Vector<Entry>();
+				Vector<Entry> old_entries = new Vector<Entry>();
 				for(Entry e : entries){
-					copy.add(e);
+					old_entries.add(e);
 				}
 				refreshData();
-				Log.d("enrties",""+copy.size());
-				
-				
-				//series1.appendData(new DataPoint(values_count, e.getTemperature()), false, 50);
-				//series2.appendData(new DataPoint(values_count, e.getGas()), true, 50);
-				//values_count++;
-				viewport.setMaxX(values_count);
+				Vector<Entry> diff = new Vector<Entry>();
+				for(Entry e : entries){
+					diff.add(e);
+				}
+				diff.removeAll(old_entries);
+				for(Entry e : diff){
+					series1.appendData(new DataPoint(values_count, e.getTemperature()), false, 500);
+					series2.appendData(new DataPoint(values_count, e.getGas()), true, 500);
+					values_count++;
+					viewport.setMaxX(values_count);
+				}
 				handler.postDelayed(this, 3000);
 			}
 		};
