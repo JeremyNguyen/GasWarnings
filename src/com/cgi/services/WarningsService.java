@@ -32,14 +32,14 @@ public class WarningsService extends Service {
 	
 	@Override
 	public void onCreate(){
-		// starting handler
+		entryDAO.open();
 		handler.post(periodicRequests);
 		Log.d("SERVICE","STARTED");
 	}
 	
 	@Override
 	public void onDestroy(){
-		// stopping handler
+		entryDAO.close();
 		handler.removeCallbacks(periodicRequests);
 		Log.d("SERVICE","DESTROYED");
 	}
@@ -110,10 +110,7 @@ public class WarningsService extends Service {
 		}
 		Log.d("SERVICE","RECEIVED "+temperature+"/"+gas);
 		Entry e = new Entry(temperature, gas);
-		// TODO : try not to open and close
-		entryDAO.open();
 		entryDAO.add(e);
-		entryDAO.close();
 	}
 	
 }

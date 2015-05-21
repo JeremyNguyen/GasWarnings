@@ -240,6 +240,7 @@ public class GraphsActivity extends Activity {
 				for(Entry e : entries){
 					old_entries.add(e);
 				}
+				entries = new Vector<Entry>();
 				refreshData();
 				Vector<Entry> diff = new Vector<Entry>();
 				for(Entry e : entries){

@@ -21,20 +21,6 @@ import data.EntryDAO;
 
 public class MainActivity extends Activity {
 	
-	/*
-	private WarningsService service;
-	ServiceConnection warnings_service_connection = new ServiceConnection() {
-	    public void onServiceConnected(ComponentName className, IBinder binder) {
-	        service = ((WarningsService.LocalBinder)binder).getService();
-	    }
-	    public void onServiceDisconnected(ComponentName className) {
-	        service = null;
-	    }
-	};
-	
-	bindService(new Intent(MainActivity.this, WarningsService.class), mConnection, Context.BIND_AUTO_CREATE);
-	*/
-	
 	EntryDAO dao;
 	
 	private TextView tv_welcome;

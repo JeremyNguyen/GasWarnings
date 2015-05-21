@@ -12,6 +12,9 @@ public class SQLiteHelper extends SQLiteOpenHelper{
 	public static final String ENTRY_TABLE_CREATE = "CREATE TABLE entries (date TEXT, temperature REAL, gas REAL);";
 	public static final String ENTRY_TABLE_DROP = "DROP TABLE IF EXISTS entries;";
 	
+	public static final String WARNINGS_TABLE_CREATE = "CREATE TABLE warnings (date TEXT, type INTEGER);";
+	public static final String WARNINGS_TABLE_DROP = "DROP TABLE IF EXISTS warnings";
+	
 	//TODO : warnings DAO and tables
 	
 	public SQLiteHelper(Context context){
