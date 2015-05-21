@@ -71,8 +71,8 @@ public class GraphsActivity extends Activity {
 		title.setTypeface(face, Typeface.BOLD);
 		update_button.setTypeface(face);
 		
-		//face = Type
-		//secondYAxisTitle.setTypeface(face);
+		face = Typeface.createFromAsset(getAssets(), "fonts/Calibri.ttf");
+		secondYAxisTitle.setTypeface(face);
 		secondYAxisTitle.setTextColor(Color.BLUE);
 		
 		/* update button listener */
