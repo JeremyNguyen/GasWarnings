@@ -19,7 +19,7 @@
     <string name="activity_main_menu_drop">Database : drop tables</string>
     <string name="activity_main_menu_random">Database : add random entry</string>
     <string name="activity_main_menu_randomWarning">Database : add random warning</string>
-    <string name="activity_graphs_secondYAxis_title">Gas</string>
+    <string name="activity_graphs_secondYAxis_title">Gas (%)</string>
     <string name="activity_warnings_title">Warnings history :</string>
     <string name="activity_warnings_button_clear">Clear history</string>
 

@@ -128,7 +128,7 @@ public class GraphsActivity extends Activity {
         grid.setPadding(25);
         grid.setLabelsSpace(5);
         grid.setHorizontalAxisTitle("Time");
-        grid.setVerticalAxisTitle("Temperature");
+        grid.setVerticalAxisTitle("Temperature (°C)");
         grid.setHorizontalAxisTitleTextSize(25);
         grid.setVerticalAxisTitleTextSize(25);
         grid.setHorizontalAxisTitleColor(Color.BLACK);
