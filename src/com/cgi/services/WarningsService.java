@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 
 import android.app.Service;
 import android.content.Intent;
@@ -15,49 +16,23 @@ import android.os.IBinder;
 import android.util.Log;
 import data.Entry;
 import data.EntryDAO;
+import data.Warning;
+import data.WarningsDAO;
 
 public class WarningsService extends Service {
 	
+	/* Binder */
 	private final IBinder binder = new LocalBinder();
 	
-	EntryDAO entryDAO = new EntryDAO(this);
+	/* Data */
+	private boolean warningOn = false;
+	private EntryDAO entryDAO = new EntryDAO(this);
+	private WarningsDAO warningsDAO = new WarningsDAO(this);
 	
-	public WarningsService() {
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId){
-		return Service.START_NOT_STICKY;
-	}
-	
-	@Override
-	public void onCreate(){
-		entryDAO.open();
-		handler.post(periodicRequests);
-		Log.d("SERVICE","STARTED");
-	}
-	
-	@Override
-	public void onDestroy(){
-		entryDAO.close();
-		handler.removeCallbacks(periodicRequests);
-		Log.d("SERVICE","DESTROYED");
-	}
-
-	public class LocalBinder extends Binder {
-        public WarningsService getService() {
-            return WarningsService.this;
-        }
-    }
-
-	@Override
-	public IBinder onBind(Intent intent) {
-		return binder;
-	}
-	
-	Handler handler = new Handler();
-	
-	Runnable periodicRequests = new Runnable() {
+	/* Threads */
+	private int requestsInterval = 3000;
+	private Handler handler = new Handler();
+	private Runnable periodicRequests = new Runnable() {
 		@Override
 		public void run() {
 			Thread thread = new Thread(new Runnable(){
@@ -90,9 +65,44 @@ public class WarningsService extends Service {
 			    }
 			});
 			thread.start();
-			handler.postDelayed(periodicRequests, 5000);
+			handler.postDelayed(periodicRequests, requestsInterval);
 		}
 	};
+	
+	public WarningsService() {
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId){
+		return Service.START_NOT_STICKY;
+	}
+	
+	@Override
+	public void onCreate(){
+		entryDAO.open();
+		warningsDAO.open();
+		handler.post(periodicRequests);
+		Log.d("SERVICE","STARTED");
+	}
+	
+	@Override
+	public void onDestroy(){
+		entryDAO.close();
+		warningsDAO.close();
+		handler.removeCallbacks(periodicRequests);
+		Log.d("SERVICE","DESTROYED");
+	}
+
+	public class LocalBinder extends Binder {
+        public WarningsService getService() {
+            return WarningsService.this;
+        }
+    }
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		return binder;
+	}
 	
 	private void parseAndStore(String response){
 		float temperature = 0;
@@ -111,6 +121,14 @@ public class WarningsService extends Service {
 		Log.d("SERVICE","RECEIVED "+temperature+"/"+gas);
 		Entry e = new Entry(temperature, gas);
 		entryDAO.add(e);
+		if(gas > 20 && ! warningOn){
+			warningOn = true;
+			warningsDAO.add(new Warning(new Date(), null));
+		}
+		if(gas < 20 && warningOn){
+			warningOn = false;
+			warningsDAO.update(new Date());
+		}
 	}
 	
 }

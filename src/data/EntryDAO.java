@@ -9,7 +9,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class EntryDAO {
 	
@@ -68,7 +67,7 @@ public class EntryDAO {
 			return entries;
 		}
 		catch(Exception e){
-			Log.d("DB","no such tables: entries");
+			e.printStackTrace();
 			return null;
 		}
 	}

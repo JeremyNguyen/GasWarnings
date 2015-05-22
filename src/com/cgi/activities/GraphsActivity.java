@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.Vector;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,25 +33,27 @@ import data.EntryDAO;
 
 public class GraphsActivity extends Activity {
 
+	/* Views */
 	private GraphView graph;
 	private TextView title, secondYAxisTitle;
 	private Button update_button;
 	private Typeface face;
-	
 	private Viewport viewport;
     private GridLabelRenderer grid;
     private LegendRenderer legend;
 	
-	Handler handler = new Handler();
-	Runnable runnable;
+    /* Threads */
+	private Handler handler = new Handler();
+	private Runnable runnable;
+	private int refreshInterval = 3000;
 	
-	boolean update_state = false;
-	
-	EntryDAO dao;
-	Vector<Entry> entries = new Vector<Entry>();
-	LineGraphSeries<DataPoint> series1, series2;
-	int values_count;
-	DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
+	/* Data */
+	private boolean update_state = false;
+	private EntryDAO entryDAO = new EntryDAO(this);
+	private Vector<Entry> entries = new Vector<Entry>();
+	private LineGraphSeries<DataPoint> series1, series2;
+	private int values_count;
+	private DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,26 +93,14 @@ public class GraphsActivity extends Activity {
 				}
 			}
 		});
-		
-		/* drawing graph */
-		drawGraph();
-        
-        /* start updating service if the warnings service is on */
-        Intent intent = this.getIntent();
-        boolean service_state = intent.getBooleanExtra("service_state", false);
         
 	}
 	
 	public void drawGraph(){
-		
 		/* fecthing data */
-		dao = new EntryDAO(this);
 		refreshData();
-		
 		/* SERIES */
-		
 		refreshUI(false);
-		
 		series1.setDrawDataPoints(true);
 		series2.setDrawDataPoints(true);
 		series1.setColor(Color.RED);
@@ -123,7 +111,6 @@ public class GraphsActivity extends Activity {
 		series2.setDataPointsRadius(5);
 		series1.setTitle("temperature");
 		series2.setTitle("gas");
-		
 		OnDataPointTapListener pointTapListener = new OnDataPointTapListener() {
 			@Override
 			public void onTap(Series arg0, DataPointInterface point) {
@@ -132,14 +119,11 @@ public class GraphsActivity extends Activity {
 				Toast.makeText(GraphsActivity.this, df.format(date), Toast.LENGTH_SHORT).show();
 			}
 		};
-		
 		series1.setOnDataPointTapListener(pointTapListener);
 		series2.setOnDataPointTapListener(pointTapListener);
-		
 		viewport = graph.getViewport();
         grid = graph.getGridLabelRenderer();
         legend = graph.getLegendRenderer();
-		
         /* GRID */
         grid.setPadding(25);
         grid.setLabelsSpace(5);
@@ -153,7 +137,6 @@ public class GraphsActivity extends Activity {
         grid.setNumVerticalLabels(5);
         grid.setVerticalLabelsColor(Color.RED);
     	grid.setVerticalLabelsSecondScaleColor(Color.BLUE);
-        
         /* VIEWPORT */
         viewport.setScrollable(true);
         viewport.setScalable(true);
@@ -166,13 +149,11 @@ public class GraphsActivity extends Activity {
         	viewport.setMaxX(values_count);
         }
         viewport.setYAxisBoundsManual(true);
-        viewport.setMinY(10);
+        viewport.setMinY(20);
         viewport.setMaxY(40);
         graph.getSecondScale().setMinY(0);
         graph.getSecondScale().setMaxY(100);
-        
         /* LEGEND */
-        
         legend.setVisible(true);
         legend.setAlign(LegendRenderer.LegendAlign.TOP);
         legend.setTextSize(15);
@@ -180,17 +161,15 @@ public class GraphsActivity extends Activity {
         legend.setSpacing(10);
         legend.setPadding(15);
         legend.setBackgroundColor(Color.WHITE);
-        
+        /* attaching series to graph */
         graph.addSeries(series1);
         graph.getSecondScale().addSeries(series2);
-        
 	}
 	
 	public void refreshData(){
+		entryDAO.open();
 		entries.clear();
-		dao.open();
-		entries = dao.selectAll();
-		dao.close();
+		entries = entryDAO.selectAll();
 	}
 	
 	public void refreshUI(boolean refresh){
@@ -210,7 +189,6 @@ public class GraphsActivity extends Activity {
 	            i++;
 	        }
         }
-		
 		if(refresh){
 			series1.resetData(data1);
 			series2.resetData(data2);
@@ -225,13 +203,10 @@ public class GraphsActivity extends Activity {
 			series1 = new LineGraphSeries<DataPoint>(data1);			
 			series2 = new LineGraphSeries<DataPoint>(data2);			
 		}
-		
 	}
 
 	public void startUpdate(){
-		
 		refreshUI(true);
-		
 		runnable = new Runnable() {
 			@Override
 			public void run() {
@@ -251,9 +226,15 @@ public class GraphsActivity extends Activity {
 					series1.appendData(new DataPoint(values_count, e.getTemperature()), false, 500);
 					series2.appendData(new DataPoint(values_count, e.getGas()), true, 500);
 					values_count++;
+					if(values_count > 10){
+						viewport.setMinX(values_count - 10);
+					}
+					else{
+						viewport.setMinX(0);
+					}
 					viewport.setMaxX(values_count);
 				}
-				handler.postDelayed(this, 3000);
+				handler.postDelayed(this, refreshInterval);
 			}
 		};
 		handler.postDelayed(runnable, 1000);
@@ -276,5 +257,19 @@ public class GraphsActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onResume(){
+		entryDAO.open();
+		/* drawing graph */
+		drawGraph();
+		super.onResume();
+	}
+	
+	@Override
+	public void onPause(){
+		entryDAO.close();
+		super.onPause();
 	}
 }

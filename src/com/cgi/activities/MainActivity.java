@@ -1,5 +1,7 @@
 package com.cgi.activities;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -18,15 +20,20 @@ import com.cgi.services.WarningsService;
 
 import data.Entry;
 import data.EntryDAO;
+import data.Warning;
+import data.WarningsDAO;
 
 public class MainActivity extends Activity {
-	
-	EntryDAO dao;
-	
+
+	/* Views */
 	private TextView tv_welcome;
 	private Button button_service, button_list, button_graphs;
 	private Typeface face;
 	private boolean service_state;
+
+	/* Data */
+	private EntryDAO entryDAO = new EntryDAO(this);
+	private WarningsDAO warningsDAO = new WarningsDAO(this);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +108,7 @@ public class MainActivity extends Activity {
 		
 	}
 	
-	/** @return true if warnings service is running **/
+	/* @return true if warnings service is running */
 	private boolean ServiceRunning(Class<?> serviceClass) {
 	    ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -120,24 +127,41 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		dao = new EntryDAO(this);
-		dao.open();
 		int id = item.getItemId();
 		switch(id){
 		case R.id.activity_main_menu_random:
 			Entry e = Entry.randomEntry();
-			dao.add(e);
+			entryDAO.add(e);
 			break;
 		case R.id.activity_main_menu_create:
-			dao.create();
+			entryDAO.create();
+			warningsDAO.create();
 			break;
 		case R.id.activity_main_menu_drop:
-			dao.drop();
+			entryDAO.drop();
+			warningsDAO.drop();
+			break;
+		case R.id.activity_main_menu_randomWarning:
+			warningsDAO.add(new Warning(new Date(), null));
 			break;
 		default:
 			return true;
 		}
-		dao.close();
 		return super.onOptionsItemSelected(item);
 	}
+	
+	@Override
+	public void onResume(){
+		entryDAO.open();
+		warningsDAO.open();
+		super.onResume();
+	}
+	
+	@Override
+	public void onPause(){
+		entryDAO.close();
+		warningsDAO.close();
+		super.onPause();
+	}
+	
 }
