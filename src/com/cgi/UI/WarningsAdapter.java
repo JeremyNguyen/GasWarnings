@@ -1,4 +1,4 @@
-package com.cgi.activities;
+package com.cgi.UI;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.cgi.activities.GraphsActivity" >
+    tools:context="com.cgi.UI.GraphsActivity" >
 
     <LinearLayout 
         android:id="@+id/activity_graphs_top_layout"

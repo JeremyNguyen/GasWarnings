@@ -1,4 +1,4 @@
-package com.cgi.activities;
+package com.cgi.UI;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,7 +45,7 @@ public class GraphsActivity extends Activity {
     /* Threads */
 	private Handler handler = new Handler();
 	private Runnable runnable;
-	private int refreshInterval = 3000;
+	private int refreshInterval = 2000;
 	
 	/* Data */
 	private boolean update_state = false;

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class EntryDAO {
 	
@@ -44,6 +45,8 @@ public class EntryDAO {
 		db.execSQL(SQLiteHelper.ENTRY_TABLE_DROP);
 	}
 	
+	
+	
 	public void add(Entry entry){
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		ContentValues cv = new ContentValues();
@@ -51,6 +54,19 @@ public class EntryDAO {
 		cv.put("temperature", entry.getTemperature());
 		cv.put("gas", entry.getGas());
 		db.insert("entries", null, cv);
+	}
+	
+	/* Récupération du dernier taux de gaz en base */
+	public float selectLastGas(){
+		Cursor cursor = db.rawQuery("SELECT MAX(date), gas FROM entries", null);
+		cursor.moveToFirst();
+		try{
+			float last_gas = cursor.getFloat(1);
+			return last_gas;
+		}
+		catch(Exception e){
+			return 0;
+		}
 	}
 	
 	public Vector<Entry> selectAll(){

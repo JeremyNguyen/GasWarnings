@@ -8,6 +8,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 
+import com.cgi.UI.UIHelper;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -25,12 +27,11 @@ public class WarningsService extends Service {
 	private final IBinder binder = new LocalBinder();
 	
 	/* Data */
-	private boolean warningOn = false;
 	private EntryDAO entryDAO = new EntryDAO(this);
 	private WarningsDAO warningsDAO = new WarningsDAO(this);
 	
 	/* Threads */
-	private int requestsInterval = 3000;
+	private int requestsInterval = 2000;
 	private Handler handler = new Handler();
 	private Runnable periodicRequests = new Runnable() {
 		@Override
@@ -119,16 +120,19 @@ public class WarningsService extends Service {
 			}
 		}
 		Log.d("SERVICE","RECEIVED "+temperature+"/"+gas);
-		Entry e = new Entry(temperature, gas);
-		entryDAO.add(e);
-		if(gas > 20 && ! warningOn){
-			warningOn = true;
-			warningsDAO.add(new Warning(new Date(), null));
-		}
-		if(gas < 20 && warningOn){
-			warningOn = false;
+		
+		float last_gas = entryDAO.selectLastGas();
+		
+		if (last_gas >= 20 && gas <= 20){
+			UIHelper.sendNotification(this, "Warning : gas returned to normal","End of warning", gas, 1);
 			warningsDAO.update(new Date());
 		}
+		else if (last_gas <= 20 && gas >= 20){
+			UIHelper.sendNotification(this, "Warning : gas limit reached","Warning !", gas, 0);
+			warningsDAO.add(new Warning(new Date(), null));
+		}
+		Entry e = new Entry(temperature, gas);
+		entryDAO.add(e);
 	}
 	
 }

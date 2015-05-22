@@ -1,4 +1,4 @@
-package com.cgi.activities;
+package com.cgi.UI;
 
 import java.util.List;
 import java.util.Vector;
@@ -33,7 +33,7 @@ public class WarningsActivity extends Activity {
 	private WarningsAdapter adapter;
 	
 	/* Threads */
-	private int refreshInterval = 3000;
+	private int refreshInterval = 2000;
 	private Handler handler = new Handler();
 	private Runnable periodicRequests = new Runnable() {
 		@Override
