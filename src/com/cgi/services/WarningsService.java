@@ -27,6 +27,7 @@ public class WarningsService extends Service {
 	private final IBinder binder = new LocalBinder();
 	
 	/* Data */
+	private boolean DAO_closed;
 	private EntryDAO entryDAO = new EntryDAO(this);
 	private WarningsDAO warningsDAO = new WarningsDAO(this);
 	
@@ -42,19 +43,21 @@ public class WarningsService extends Service {
 			        HttpURLConnection httpconn = null;
 			    	BufferedReader br = null;
 			    	try {
-			    		URL url = new URL("http://172.20.10.5");
-			    		URLConnection conn = url.openConnection();
-			    		httpconn = (HttpURLConnection) conn;
-			    		if(httpconn.getResponseCode() == HttpURLConnection.HTTP_OK){
-			    			InputStream stream = httpconn.getInputStream();
-			    			br = new BufferedReader(new InputStreamReader(stream));
-			    			String line;
-			    			String response = "";
-			    			while((line = br.readLine()) != null){
-			    				response += line+'\n';
-			    			}
-			    			parseAndStore(response);
-			    		}	
+			    		if(!DAO_closed){
+				    		URL url = new URL("http://172.20.10.5");
+				    		URLConnection conn = url.openConnection();
+				    		httpconn = (HttpURLConnection) conn;
+				    		if(httpconn.getResponseCode() == HttpURLConnection.HTTP_OK){
+				    			InputStream stream = httpconn.getInputStream();
+				    			br = new BufferedReader(new InputStreamReader(stream));
+				    			String line;
+				    			String response = "";
+				    			while((line = br.readLine()) != null){
+				    				response += line+'\n';
+				    			}
+				    			parseAndStore(response);
+				    		}	
+			    		}
 			    	} 
 			    	catch (Exception e) {
 			    		e.printStackTrace();
@@ -82,6 +85,7 @@ public class WarningsService extends Service {
 	public void onCreate(){
 		entryDAO.open();
 		warningsDAO.open();
+		DAO_closed = false;
 		handler.post(periodicRequests);
 		Log.d("SERVICE","STARTED");
 	}
@@ -90,6 +94,7 @@ public class WarningsService extends Service {
 	public void onDestroy(){
 		entryDAO.close();
 		warningsDAO.close();
+		DAO_closed = true;
 		handler.removeCallbacks(periodicRequests);
 		Log.d("SERVICE","DESTROYED");
 	}
