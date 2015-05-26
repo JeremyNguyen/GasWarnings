@@ -80,10 +80,12 @@ public class WarningsAdapter extends BaseAdapter {
 		
 		if(w.getEnd() == null){
 			holder.item.setBackgroundResource(R.drawable.red_button);
-			// TODO : duration
 		}
 		else{
 			holder.item.setBackgroundResource(R.drawable.green_button);
+			long diff = w.getEnd().getTime() - w.getStart().getTime();
+			diff /= 1000;
+			s += " Duration : "+diff+" s.";
 		}
 		holder.item.setText(s);
 		return v;
