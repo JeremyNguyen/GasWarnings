@@ -3,6 +3,9 @@
     tools:context="com.cgi.gaswarnings.MainActivity" >
 
     <item 
+        android:id="@+id/activity_main_menu_ipconfig"
+        android:title="@string/activity_main_menu_ipconfig"/>
+    <item 
         android:id="@+id/activity_main_menu_random"
         android:title="@string/activity_main_menu_random"/>
     <item 

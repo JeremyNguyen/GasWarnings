@@ -4,11 +4,18 @@
 
 package com.cgi.UI;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.cgi.gaswarnings.R;
 
@@ -35,5 +42,33 @@ public class UIHelper {
 		notif.flags = Notification.FLAG_AUTO_CANCEL;
 		manager.notify(id, notif);
 	}
-	 
+	
+	public static void ipConfigDialog(final Context context){
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+		alertDialog.setTitle("Arduino IP");
+		alertDialog.setMessage("Enter IP (172.20...");
+		final EditText input = new EditText(context);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT);
+		input.setLayoutParams(lp);
+		alertDialog.setView(input);
+		alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				String ip = input.getText().toString();
+				ip = "http://" + ip;
+				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+				SharedPreferences.Editor editor = preferences.edit();
+				editor.putString("arduino_ip", ip);
+				editor.commit();
+			}
+		});
+		alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		alertDialog.show();
+	}
+
 }

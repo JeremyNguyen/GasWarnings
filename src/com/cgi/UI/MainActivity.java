@@ -12,8 +12,10 @@ import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -146,6 +148,9 @@ public class MainActivity extends Activity {
 			break;
 		case R.id.activity_main_menu_randomWarning:
 			warningsDAO.add(new Warning(-1, new Date(), null));
+			break;
+		case R.id.activity_main_menu_ipconfig:
+			UIHelper.ipConfigDialog(this);
 			break;
 		default:
 			return true;

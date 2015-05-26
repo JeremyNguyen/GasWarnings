@@ -70,7 +70,7 @@ public class WarningsDAO {
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		ContentValues cv = new ContentValues();
 		cv.put("end", df.format(end));
-		db.update("warnings", cv, "id_gas = ?", new String[]{""+id_gas});
+		db.update("warnings", cv, "id_gas = ? AND end = ?", new String[]{Integer.toString(id_gas),"null"});
 	}
 	
 	/* Selects a Warning with a specific id and a null end date */

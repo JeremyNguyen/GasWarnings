@@ -15,9 +15,11 @@ import java.util.Date;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.cgi.UI.UIHelper;
@@ -100,6 +102,8 @@ public class WarningsService extends Service {
 	/* Starting http requests on create, opening DAOs */
 	@Override
 	public void onCreate(){
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		ip_arduino = preferences.getString("arduino_ip", "null");
 		entryDAO.open();
 		warningsDAO.open();
 		DAO_closed = false;
