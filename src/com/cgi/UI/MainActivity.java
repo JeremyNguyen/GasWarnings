@@ -1,3 +1,8 @@
+/**
+ * Activity : Application home
+ * Starts/stops data receiving service, links to graphs and warning history activities
+ */
+
 package com.cgi.UI;
 
 import java.util.Date;
@@ -83,7 +88,6 @@ public class MainActivity extends Activity {
 					service_state = true;
 					startService(warnings_service);
 				}
-				
 			}
 		});
 		
@@ -95,7 +99,6 @@ public class MainActivity extends Activity {
 				startActivity(startWarningsActivity);
 			}
 		});
-			
 		/* link to graphs activity */
 		button_graphs.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -105,7 +108,6 @@ public class MainActivity extends Activity {
 				startActivity(startGraphsActivity);
 			}
 		});
-		
 	}
 	
 	/* @return true if warnings service is running */
@@ -125,6 +127,7 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	/* Debugging options */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
@@ -150,6 +153,7 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/* Opens DAOs on resume */
 	@Override
 	public void onResume(){
 		entryDAO.open();
@@ -157,6 +161,7 @@ public class MainActivity extends Activity {
 		super.onResume();
 	}
 	
+	/* Closes DAOs on pause */
 	@Override
 	public void onPause(){
 		entryDAO.close();

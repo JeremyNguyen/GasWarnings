@@ -1,3 +1,8 @@
+/**
+ * Activity : graphics
+ * Displays graphics with database entries
+ */
+
 package com.cgi.UI;
 
 import java.text.DateFormat;
@@ -93,13 +98,13 @@ public class GraphsActivity extends Activity {
 				}
 			}
 		});
-        
 	}
 	
+	/* Graph setup */
 	public void drawGraph(){
 		/* fecthing data */
 		refreshData();
-		/* SERIES */
+		/* Series */
 		refreshUI(false);
 		series1.setDrawDataPoints(true);
 		series2.setDrawDataPoints(true);
@@ -124,7 +129,7 @@ public class GraphsActivity extends Activity {
 		viewport = graph.getViewport();
         grid = graph.getGridLabelRenderer();
         legend = graph.getLegendRenderer();
-        /* GRID */
+        /* Grid */
         grid.setPadding(25);
         grid.setLabelsSpace(5);
         grid.setHorizontalAxisTitle("Time");
@@ -137,7 +142,7 @@ public class GraphsActivity extends Activity {
         grid.setNumVerticalLabels(5);
         grid.setVerticalLabelsColor(Color.RED);
     	grid.setVerticalLabelsSecondScaleColor(Color.BLUE);
-        /* VIEWPORT */
+        /* Viewport */
         viewport.setScrollable(true);
         viewport.setScalable(true);
         viewport.setXAxisBoundsManual(true);
@@ -153,7 +158,7 @@ public class GraphsActivity extends Activity {
         viewport.setMaxY(40);
         graph.getSecondScale().setMinY(0);
         graph.getSecondScale().setMaxY(100);
-        /* LEGEND */
+        /* Legend */
         legend.setVisible(true);
         legend.setAlign(LegendRenderer.LegendAlign.TOP);
         legend.setTextSize(15);
@@ -161,17 +166,20 @@ public class GraphsActivity extends Activity {
         legend.setSpacing(10);
         legend.setPadding(15);
         legend.setBackgroundColor(Color.WHITE);
-        /* attaching series to graph */
+        
+        // attaching series to graph
         graph.addSeries(series1);
         graph.getSecondScale().addSeries(series2);
 	}
 	
+	/* Refreshes data */
 	public void refreshData(){
 		entryDAO.open();
 		entries.clear();
 		entries = entryDAO.selectAll();
 	}
 	
+	/* Redraws the graph */
 	public void refreshUI(boolean refresh){
 		if(entries != null){
 			values_count = entries.size();
@@ -192,6 +200,7 @@ public class GraphsActivity extends Activity {
 		if(refresh){
 			series1.resetData(data1);
 			series2.resetData(data2);
+			// adjusting viewport
 			if(values_count == 0){
 	        	viewport.setMaxX(5);
 	        }
@@ -205,12 +214,14 @@ public class GraphsActivity extends Activity {
 		}
 	}
 
+	/* Starts the live data display service */
 	public void startUpdate(){
+		/* Draws the data missed while the service was off */
 		refreshUI(true);
+		/* Periodically calculate the latest added entries and update the graph */
 		runnable = new Runnable() {
 			@Override
 			public void run() {
-				
 				Vector<Entry> old_entries = new Vector<Entry>();
 				for(Entry e : entries){
 					old_entries.add(e);
@@ -226,6 +237,7 @@ public class GraphsActivity extends Activity {
 					series1.appendData(new DataPoint(values_count, e.getTemperature()), false, 500);
 					series2.appendData(new DataPoint(values_count, e.getGas()), true, 500);
 					values_count++;
+					// adjusting viewport
 					if(values_count > 10){
 						viewport.setMinX(values_count - 10);
 					}
@@ -240,6 +252,7 @@ public class GraphsActivity extends Activity {
 		handler.postDelayed(runnable, 1000);
 	}
 	
+	/* Stops the live service */
 	public void stopUpdate(){
 		handler.removeCallbacks(runnable);
 	}
@@ -259,6 +272,7 @@ public class GraphsActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/* Opens DAOs on resume */
 	@Override
 	public void onResume(){
 		entryDAO.open();
@@ -267,6 +281,7 @@ public class GraphsActivity extends Activity {
 		super.onResume();
 	}
 	
+	/* Closes DAOs on pause */
 	@Override
 	public void onPause(){
 		entryDAO.close();

@@ -1,3 +1,7 @@
+/**
+ * Custom Adapter for displaying Warnings history
+ */
+
 package com.cgi.UI;
 
 import java.text.DateFormat;
@@ -45,6 +49,7 @@ public class WarningsAdapter extends BaseAdapter {
 		return arg0;
 	}
 
+	/* Applies warning item text and red or green color depending on Warning state */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v  = convertView;
@@ -73,13 +78,14 @@ public class WarningsAdapter extends BaseAdapter {
 		s += end;
 		s += ".";
 		
-		holder.item.setText(s);
 		if(w.getEnd() == null){
 			holder.item.setBackgroundResource(R.drawable.red_button);
+			// TODO : duration
 		}
 		else{
 			holder.item.setBackgroundResource(R.drawable.green_button);
 		}
+		holder.item.setText(s);
 		return v;
 	}
 

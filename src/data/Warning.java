@@ -1,3 +1,8 @@
+/** 
+ * Class for the model Warning
+ * A Warning has start and end dates, and the id of the sensor triggering it
+ */
+
 package data;
 
 import java.util.Date;

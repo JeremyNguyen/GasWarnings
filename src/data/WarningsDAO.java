@@ -1,3 +1,8 @@
+/**
+ * Data Access Ojbect : Warning
+ * Performs database operations for the Warning object
+ */
+
 package data;
 
 import java.text.DateFormat;
@@ -10,7 +15,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class WarningsDAO {
 	
@@ -45,7 +49,8 @@ public class WarningsDAO {
 	public void drop(){
 		db.execSQL(SQLiteHelper.WARNINGS_TABLE_DROP);
 	}
-		
+	
+	/* Adds a Warning to the table 'warnings' (end can be null) */
 	public void add(Warning warning){
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		ContentValues cv = new ContentValues();
@@ -60,6 +65,7 @@ public class WarningsDAO {
 		db.insert("warnings", null, cv);
 	}
 	
+	/* Sets the end date of a specific Warning */
 	public void endWarning(int id_gas, Date end){
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		ContentValues cv = new ContentValues();
@@ -67,6 +73,7 @@ public class WarningsDAO {
 		db.update("warnings", cv, "id_gas = ?", new String[]{""+id_gas});
 	}
 	
+	/* Selects a Warning with a specific id and a null end date */
 	public Date selectWarningStart(int id_gas){
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		Date start;
@@ -82,6 +89,7 @@ public class WarningsDAO {
 		}
 	}
 	
+	/* Selects all Warnings */
 	public Vector<Warning> selectAll(){
 		try{
 			Cursor cursor = db.rawQuery("SELECT * FROM warnings", null);
@@ -105,4 +113,5 @@ public class WarningsDAO {
 			return null;
 		}
 	}
+	
 }

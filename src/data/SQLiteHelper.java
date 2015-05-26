@@ -1,3 +1,7 @@
+/**
+ * Helper class for database managing (used in the DAOs)
+ */
+
 package data;
 
 import android.content.Context;

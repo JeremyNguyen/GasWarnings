@@ -1,3 +1,8 @@
+/**
+ * Activity : Warnings history
+ * Displays the warnings list, a clear button, and refreshes every 'refreshInterval' ms
+ */
+
 package com.cgi.UI;
 
 import java.util.List;
@@ -48,14 +53,17 @@ public class WarningsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_warnings);	
 		
+		/* fetching views */
 		listView = (ListView) findViewById(R.id.activity_warnings_listview);
 		title_tv = (TextView) findViewById(R.id.activity_warnings_title);
 		button_clear = (Button) findViewById(R.id.activity_warnings_button_clear);
 
+		/* fetting typeface */
 		face = Typeface.createFromAsset(getAssets(), "fonts/LinLibertine_R.ttf");
 		title_tv.setTypeface(face);
 		button_clear.setTypeface(face);
 		
+		/* button listener */
 		button_clear.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -64,9 +72,9 @@ public class WarningsActivity extends Activity {
 				refreshData();
 			}
 		});
-		
 	}
 	
+	/* Refreshes the Warnings list */
 	public void refreshData(){
 		Vector<Warning> vect = warningsDAO.selectAll();
 		list = vect.subList(0, vect.size());
@@ -89,6 +97,7 @@ public class WarningsActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/* Stops the refreshing service */
 	@Override
 	public void onPause(){
 		warningsDAO.close();
@@ -96,6 +105,7 @@ public class WarningsActivity extends Activity {
 		super.onPause();
 	}
 	
+	/* Resumes the refreshing service */
 	@Override
 	public void onResume(){
 		warningsDAO.open();

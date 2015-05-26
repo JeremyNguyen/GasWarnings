@@ -1,3 +1,8 @@
+/**
+ * Data Access Ojbect : Entry
+ * Performs database operations for the Entry object
+ */
+
 package data;
 
 import java.text.DateFormat;
@@ -44,8 +49,7 @@ public class EntryDAO {
 		db.execSQL(SQLiteHelper.ENTRY_TABLE_DROP);
 	}
 	
-	
-	
+	/* Adds an Entry to the table 'entries' */
 	public void add(Entry entry){
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		ContentValues cv = new ContentValues();
@@ -57,7 +61,7 @@ public class EntryDAO {
 		db.insert("entries", null, cv);
 	}
 	
-	/* Récupération du dernier taux de gaz en base */
+	/* Selects the last gas record of a specific sensor */
 	public float selectLastGas(int id_gas){
 		Cursor cursor = db.rawQuery("SELECT MAX(date), gas FROM entries WHERE id_gas = ?", new String [] {Integer.toString(id_gas)});
 		cursor.moveToFirst();
@@ -70,6 +74,7 @@ public class EntryDAO {
 		}
 	}
 	
+	/* Selects all Entrys */
 	public Vector<Entry> selectAll(){
 		try{
 			Cursor cursor = db.rawQuery("SELECT * FROM entries", null);

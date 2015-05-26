@@ -1,3 +1,8 @@
+/**
+ * Service : data requesting
+ * Periodically sends http requests to the Arduino server and stores them in the local database
+ */
+
 package com.cgi.services;
 
 import java.io.BufferedReader;
@@ -7,9 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.Vector;
-
-import com.cgi.UI.UIHelper;
 
 import android.app.Service;
 import android.content.Intent;
@@ -17,6 +19,9 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.cgi.UI.UIHelper;
+
 import data.Entry;
 import data.EntryDAO;
 import data.Warning;
@@ -39,6 +44,8 @@ public class WarningsService extends Service {
 	/* Threads */
 	private int requestsInterval = 2000;
 	private Handler handler = new Handler();
+	
+	/* Periodic http requests */
 	private Runnable periodicRequests = new Runnable() {
 		@Override
 		public void run() {
@@ -54,6 +61,7 @@ public class WarningsService extends Service {
 				    	synchronized(lock){
 				    		if(!DAO_closed){
 				    			if(httpconn.getResponseCode() == HttpURLConnection.HTTP_OK){
+				    				// reading stream
 				    				InputStream stream = httpconn.getInputStream();
 				    				br = new BufferedReader(new InputStreamReader(stream));
 				    				String line;
@@ -61,6 +69,7 @@ public class WarningsService extends Service {
 				    				while((line = br.readLine()) != null){
 				    					response += line+'\n';
 				    				}
+				    				// storing data
 				    				parseAndStore(response);
 				    			}
 				    		}
@@ -88,6 +97,7 @@ public class WarningsService extends Service {
 		return Service.START_NOT_STICKY;
 	}
 	
+	/* Starting http requests on create, opening DAOs */
 	@Override
 	public void onCreate(){
 		entryDAO.open();
@@ -97,6 +107,7 @@ public class WarningsService extends Service {
 		Log.d("SERVICE","STARTED");
 	}
 	
+	/* Stopping http requests on destroy, closing DAOs */
 	@Override
 	public void onDestroy(){
 		entryDAO.close();
@@ -106,6 +117,7 @@ public class WarningsService extends Service {
 		Log.d("SERVICE","DESTROYED");
 	}
 
+	
 	public class LocalBinder extends Binder {
         public WarningsService getService() {
             return WarningsService.this;
@@ -117,6 +129,7 @@ public class WarningsService extends Service {
 		return binder;
 	}
 	
+	/* Parsing http response and storing values in database */
 	private void parseAndStore(String response){
 		if(DAO_closed){
 			Log.d("parseAndStore","fail");
@@ -146,6 +159,7 @@ public class WarningsService extends Service {
 		float last_gas = entryDAO.selectLastGas(id_gas);
 		Date now = new Date();
 		
+		/* If last gas measured was over limit and it's now below, the warning is over */
 		if (last_gas >= 20 && gas <= 20){
 			Date warning_start = warningsDAO.selectWarningStart(id_gas);
 			if(warning_start != null){
@@ -160,6 +174,7 @@ public class WarningsService extends Service {
 				warningsDAO.endWarning(id_gas, now);
 			}
 		}
+		/* If last gas measured was below limit and it's now over, it's the start of a new warning */
 		else if (last_gas <= 20 && gas >= 20){
 			UIHelper.sendNotification(this, "Warning : gas limit reached (Sensor ID : "+id_gas+")", "Warning !", "Gas level : "+gas, 0);
 			warningsDAO.add(new Warning(id_gas, now, null));

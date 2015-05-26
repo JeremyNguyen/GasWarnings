@@ -1,3 +1,8 @@
+/**
+ * Class for the model Entry
+ * An Entry is a record of the data collected by the sensors, contains their id, the date of recording, and the values
+ */
+
 package data;
 
 import java.util.Date;
@@ -59,6 +64,7 @@ public class Entry implements Comparable<Entry> {
 		this.id_gas = id_gas;
 	}
 
+	/* Creates an Entry randomly generated (for testing) */
 	public static Entry randomEntry(){
 		Random random = new Random();
 		Entry e = new Entry(new Date(), -1, random.nextInt(100), -1, random.nextInt(100));
