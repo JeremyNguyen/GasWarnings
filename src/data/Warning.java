@@ -6,10 +6,12 @@ public class Warning {
 	
 	private Date start;
 	private Date end;
+	private int id_gas = -1;
 	
-	public Warning(Date start, Date end){
+	public Warning(int id_gas, Date start, Date end){
 		this.start = start;
 		this.end = end;
+		this.id_gas = id_gas;
 	}
 
 	public Date getStart() {
@@ -28,7 +30,12 @@ public class Warning {
 		this.end = end;
 	}
 
-	
-	
-	
+	public int getId_gas() {
+		return id_gas;
+	}
+
+	public void setId_gas(int id_gas) {
+		this.id_gas = id_gas;
+	}
+
 }

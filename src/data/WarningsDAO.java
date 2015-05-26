@@ -49,6 +49,7 @@ public class WarningsDAO {
 	public void add(Warning warning){
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		ContentValues cv = new ContentValues();
+		cv.put("id_gas", warning.getId_gas());
 		cv.put("start", df.format(warning.getStart()));
 		if(warning.getEnd() == null){
 			cv.put("end", "null");
@@ -56,17 +57,29 @@ public class WarningsDAO {
 		else{
 			cv.put("end", df.format(warning.getEnd()));
 		}
-		if(db == null){
-			Log.d("NULL","AGAIN");
-		}
 		db.insert("warnings", null, cv);
 	}
 	
-	public void update(Date end){
+	public void endWarning(int id_gas, Date end){
 		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
 		ContentValues cv = new ContentValues();
 		cv.put("end", df.format(end));
-		db.update("warnings", cv, "end = ?", new String[]{"null"});
+		db.update("warnings", cv, "id_gas = ?", new String[]{""+id_gas});
+	}
+	
+	public Date selectWarningStart(int id_gas){
+		DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
+		Date start;
+		Cursor cursor = db.rawQuery("SELECT start FROM warnings WHERE id_gas = ? AND end = ?", new String [] {Integer.toString(id_gas), "null"});
+		cursor.moveToFirst();
+		try{
+			start = df.parse(cursor.getString(0));
+			return start;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public Vector<Warning> selectAll(){
@@ -77,11 +90,11 @@ public class WarningsDAO {
 			cursor.moveToFirst();
 			for(int i=0; i < cursor.getCount(); i++){
 				Date end = null;
-				String end_s = cursor.getString(1);
+				String end_s = cursor.getString(2);
 				if(!end_s.equals("null")){
 					end = df.parse(end_s);
 				}
-				warnings.add(new Warning(df.parse(cursor.getString(0)), end));
+				warnings.add(new Warning(cursor.getInt(0), df.parse(cursor.getString(1)), end));
 				cursor.moveToNext();
 			}
 			cursor.close();
@@ -89,7 +102,6 @@ public class WarningsDAO {
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			Log.d("DB","no such tables: warnings");
 			return null;
 		}
 	}

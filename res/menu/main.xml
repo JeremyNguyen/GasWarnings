@@ -7,7 +7,7 @@
         android:title="@string/activity_main_menu_random"/>
     <item 
         android:id="@+id/activity_main_menu_randomWarning"
-        android:title="@string/activity_main_menu_randomWarning"/>"
+        android:title="@string/activity_main_menu_randomWarning"/>
   	<item 
        	android:id="@+id/activity_main_menu_create"
         android:title="@string/activity_main_menu_create"/>

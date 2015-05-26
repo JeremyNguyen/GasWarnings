@@ -8,17 +8,15 @@ public class Entry implements Comparable<Entry> {
 	private Date date;
 	private float temperature;
 	private float gas;
+	private int id_temp = -1;
+	private int id_gas = -1;
 	
-	public Entry(float temperature, float gas){
-		this.date = new Date();
-		this.temperature = temperature;
-		this.gas = gas;
-	}
-	
-	public Entry(Date date, float temperature, float gas){
+	public Entry(Date date, int id_temp, float temperature, int id_gas, float gas){
 		this.date = date;
 		this.temperature = temperature;
 		this.gas = gas;		
+		this.id_temp = id_temp;
+		this.id_gas = id_gas;
 	}
 
 	public float getTemperature() {
@@ -45,14 +43,25 @@ public class Entry implements Comparable<Entry> {
 		this.date = date;
 	}
 
-	@Override
-	public String toString(){
-		return "temp = "+temperature+" gas = "+gas+" date = "+date.toString();
+	public int getId_temp() {
+		return id_temp;
 	}
-	
+
+	public void setId_temp(int id_temp) {
+		this.id_temp = id_temp;
+	}
+
+	public int getId_gas() {
+		return id_gas;
+	}
+
+	public void setId_gas(int id_gas) {
+		this.id_gas = id_gas;
+	}
+
 	public static Entry randomEntry(){
 		Random random = new Random();
-		Entry e = new Entry(random.nextInt(100),random.nextInt(100));
+		Entry e = new Entry(new Date(), -1, random.nextInt(100), -1, random.nextInt(100));
 		return e;
 	}
 

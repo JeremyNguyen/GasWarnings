@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
+import java.util.Vector;
 
 import com.cgi.UI.UIHelper;
 
@@ -23,11 +24,15 @@ import data.WarningsDAO;
 
 public class WarningsService extends Service {
 	
+	/* Net */
+	String ip_arduino = "http://172.20.10.5";
+	Object lock = new Object();
+	
 	/* Binder */
 	private final IBinder binder = new LocalBinder();
 	
 	/* Data */
-	private boolean DAO_closed;
+	private Boolean DAO_closed;
 	private EntryDAO entryDAO = new EntryDAO(this);
 	private WarningsDAO warningsDAO = new WarningsDAO(this);
 	
@@ -43,22 +48,27 @@ public class WarningsService extends Service {
 			        HttpURLConnection httpconn = null;
 			    	BufferedReader br = null;
 			    	try {
-			    		if(!DAO_closed){
-				    		URL url = new URL("http://172.20.10.5");
-				    		URLConnection conn = url.openConnection();
-				    		httpconn = (HttpURLConnection) conn;
-				    		if(httpconn.getResponseCode() == HttpURLConnection.HTTP_OK){
-				    			InputStream stream = httpconn.getInputStream();
-				    			br = new BufferedReader(new InputStreamReader(stream));
-				    			String line;
-				    			String response = "";
-				    			while((line = br.readLine()) != null){
-				    				response += line+'\n';
+				    	URL url = new URL(ip_arduino);
+				    	URLConnection conn = url.openConnection();
+				    	httpconn = (HttpURLConnection) conn;
+				    	synchronized(lock){
+				    		if(!DAO_closed){
+				    			if(httpconn.getResponseCode() == HttpURLConnection.HTTP_OK){
+				    				InputStream stream = httpconn.getInputStream();
+				    				br = new BufferedReader(new InputStreamReader(stream));
+				    				String line;
+				    				String response = "";
+				    				while((line = br.readLine()) != null){
+				    					response += line+'\n';
+				    				}
+				    				parseAndStore(response);
 				    			}
-				    			parseAndStore(response);
-				    		}	
-			    		}
-			    	} 
+				    		}
+				    	}
+			    	}
+			    	catch(java.net.ConnectException ce){
+			    		Log.e("SERVICE", "connection failed");
+			    	}
 			    	catch (Exception e) {
 			    		e.printStackTrace();
 			    	}
@@ -72,9 +82,6 @@ public class WarningsService extends Service {
 			handler.postDelayed(periodicRequests, requestsInterval);
 		}
 	};
-	
-	public WarningsService() {
-	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
@@ -111,32 +118,53 @@ public class WarningsService extends Service {
 	}
 	
 	private void parseAndStore(String response){
+		if(DAO_closed){
+			Log.d("parseAndStore","fail");
+			return;
+		}
 		float temperature = 0;
 		float gas = 0;
+		int id_temp = -1;
+		int id_gas = -1;
 		String split [] = response.split("\n");
 		for(String line : split){
 			if(line.startsWith("Temperature : ")){
-				line = line.replace("<br />", "");
-				temperature = Float.parseFloat(line.substring(14));
+				line = line.substring(14);
+				String [] split2 = line.split("%");
+				temperature = Float.parseFloat(split2[0]);
+				id_temp = Integer.parseInt(split2[1]);
 			}
 			if(line.startsWith("Gas : ")){
-				line = line.replace("<br />", "");
-				gas = Float.parseFloat(line.substring(6));
+				line = line.substring(6);
+				String [] split2 = line.split("%");
+				gas = Float.parseFloat(split2[0]);
+				id_gas = Integer.parseInt(split2[1]);
 			}
 		}
-		Log.d("SERVICE","RECEIVED "+temperature+"/"+gas);
+		Log.d("SERVICE","RECEIVED temp = "+temperature+", gas = "+gas+", IDs = ("+id_temp+","+id_gas+")");
 		
-		float last_gas = entryDAO.selectLastGas();
+		float last_gas = entryDAO.selectLastGas(id_gas);
+		Date now = new Date();
 		
 		if (last_gas >= 20 && gas <= 20){
-			UIHelper.sendNotification(this, "Warning : gas returned to normal","End of warning", gas, 1);
-			warningsDAO.update(new Date());
+			Date warning_start = warningsDAO.selectWarningStart(id_gas);
+			if(warning_start != null){
+				// alert duration in ms
+				long diff = now.getTime() - warning_start.getTime();
+				// in seconds
+				diff /= 1000;
+				// rounded
+				diff = Math.round(diff);
+				String duration = diff+" seconds";
+				UIHelper.sendNotification(this, "Gas level returned to normal (Sensor ID : "+id_gas+")", "End of warning", "Alert duration : "+duration, 1);
+				warningsDAO.endWarning(id_gas, now);
+			}
 		}
 		else if (last_gas <= 20 && gas >= 20){
-			UIHelper.sendNotification(this, "Warning : gas limit reached","Warning !", gas, 0);
-			warningsDAO.add(new Warning(new Date(), null));
+			UIHelper.sendNotification(this, "Warning : gas limit reached (Sensor ID : "+id_gas+")", "Warning !", "Gas level : "+gas, 0);
+			warningsDAO.add(new Warning(id_gas, now, null));
 		}
-		Entry e = new Entry(temperature, gas);
+		Entry e = new Entry(now, id_temp, temperature, id_gas, gas);
 		entryDAO.add(e);
 	}
 	

@@ -20,7 +20,6 @@ import data.Warning;
 public class WarningsAdapter extends BaseAdapter {
 
 	private List<Warning> list;
-	private LayoutInflater inflater = null;
 	private Activity context;
 	Typeface face;
 	DateFormat df = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy");
@@ -28,7 +27,6 @@ public class WarningsAdapter extends BaseAdapter {
 	public WarningsAdapter(Activity context, List<Warning> list){
 		this.list = list;
 		this.context = context;
-		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		face = Typeface.createFromAsset(context.getAssets(), "fonts/LinLibertine_R.ttf");
 	}
 	

@@ -142,7 +142,7 @@ public class MainActivity extends Activity {
 			warningsDAO.drop();
 			break;
 		case R.id.activity_main_menu_randomWarning:
-			warningsDAO.add(new Warning(new Date(), null));
+			warningsDAO.add(new Warning(-1, new Date(), null));
 			break;
 		default:
 			return true;
