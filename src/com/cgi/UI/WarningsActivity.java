@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,7 @@ public class WarningsActivity extends Activity {
 	private WarningsAdapter adapter;
 	
 	/* Threads */
+	
 	private int refreshInterval = 2000;
 	private Handler handler = new Handler();
 	private Runnable periodicRequests = new Runnable() {

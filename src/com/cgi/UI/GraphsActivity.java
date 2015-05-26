@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +52,7 @@ public class GraphsActivity extends Activity {
 	private Handler handler = new Handler();
 	private Runnable runnable;
 	private int refreshInterval = 2000;
+	private Object lock = new Object();
 	
 	/* Data */
 	private boolean update_state = false;
@@ -222,29 +224,31 @@ public class GraphsActivity extends Activity {
 		runnable = new Runnable() {
 			@Override
 			public void run() {
-				Vector<Entry> old_entries = new Vector<Entry>();
-				for(Entry e : entries){
-					old_entries.add(e);
-				}
-				entries = new Vector<Entry>();
-				refreshData();
-				Vector<Entry> diff = new Vector<Entry>();
-				for(Entry e : entries){
-					diff.add(e);
-				}
-				diff.removeAll(old_entries);
-				for(Entry e : diff){
-					series1.appendData(new DataPoint(values_count, e.getTemperature()), false, 500);
-					series2.appendData(new DataPoint(values_count, e.getGas()), true, 500);
-					values_count++;
-					// adjusting viewport
-					if(values_count > 10){
-						viewport.setMinX(values_count - 10);
+				synchronized(lock){
+					Vector<Entry> old_entries = new Vector<Entry>();
+					for(Entry e : entries){
+						old_entries.add(e);
 					}
-					else{
-						viewport.setMinX(0);
+					entries = new Vector<Entry>();
+					refreshData();
+					Vector<Entry> diff = new Vector<Entry>();
+					for(Entry e : entries){
+						diff.add(e);
 					}
-					viewport.setMaxX(values_count);
+					diff.removeAll(old_entries);
+					for(Entry e : diff){
+						series1.appendData(new DataPoint(values_count, e.getTemperature()), false, 500);
+						series2.appendData(new DataPoint(values_count, e.getGas()), true, 500);
+						values_count++;
+						// adjusting viewport
+						if(values_count > 10){
+							viewport.setMinX(values_count - 10);
+						}
+						else{
+							viewport.setMinX(0);
+						}
+						viewport.setMaxX(values_count);
+					}
 				}
 				handler.postDelayed(this, refreshInterval);
 			}
@@ -287,4 +291,11 @@ public class GraphsActivity extends Activity {
 		entryDAO.close();
 		super.onPause();
 	}
+	
+	@Override
+	public void onDestroy(){
+		handler.removeCallbacks(runnable);
+		super.onDestroy();
+	}
+	
 }

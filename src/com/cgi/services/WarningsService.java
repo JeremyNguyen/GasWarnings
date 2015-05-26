@@ -65,9 +65,7 @@ public class WarningsService extends Service {
 				    	httpconn.setRequestProperty("connection","close");
 				    	synchronized(lock){
 				    		if(!DAO_closed){
-				    			Log.d("SERVICE","requesting");
 				    			if(httpconn.getResponseCode() == HttpURLConnection.HTTP_OK){
-				    				Log.d("SERVICE","done");
 				    				// reading stream
 				    				InputStream stream = httpconn.getInputStream();
 				    				br = new BufferedReader(new InputStreamReader(stream));
