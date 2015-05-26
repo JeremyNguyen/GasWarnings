@@ -67,7 +67,7 @@ public class Entry implements Comparable<Entry> {
 	/* Creates an Entry randomly generated (for testing) */
 	public static Entry randomEntry(){
 		Random random = new Random();
-		Entry e = new Entry(new Date(), -1, random.nextInt(100), -1, random.nextInt(100));
+		Entry e = new Entry(new Date(), -1, random.nextInt(10)+20, -1, random.nextInt(10));
 		return e;
 	}
 

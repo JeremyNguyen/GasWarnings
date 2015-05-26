@@ -60,9 +60,14 @@ public class WarningsService extends Service {
 				    	URL url = new URL(ip_arduino);
 				    	URLConnection conn = url.openConnection();
 				    	httpconn = (HttpURLConnection) conn;
+//				    	httpconn.setConnectTimeout(3000);
+//				    	httpconn.setReadTimeout(3000);
+				    	httpconn.setRequestProperty("connection","close");
 				    	synchronized(lock){
 				    		if(!DAO_closed){
+				    			Log.d("SERVICE","requesting");
 				    			if(httpconn.getResponseCode() == HttpURLConnection.HTTP_OK){
+				    				Log.d("SERVICE","done");
 				    				// reading stream
 				    				InputStream stream = httpconn.getInputStream();
 				    				br = new BufferedReader(new InputStreamReader(stream));
@@ -79,6 +84,10 @@ public class WarningsService extends Service {
 			    	}
 			    	catch(java.net.ConnectException ce){
 			    		Log.e("SERVICE", "connection failed");
+			    		ce.printStackTrace();
+			    	}
+			    	catch(java.net.SocketException se){
+			    		Log.e("SERVICE","connect timeout");
 			    	}
 			    	catch (Exception e) {
 			    		e.printStackTrace();
@@ -104,6 +113,7 @@ public class WarningsService extends Service {
 	public void onCreate(){
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		ip_arduino = preferences.getString("arduino_ip", "null");
+		Log.d("SERVICE","ip : "+ip_arduino);
 		entryDAO.open();
 		warningsDAO.open();
 		DAO_closed = false;
