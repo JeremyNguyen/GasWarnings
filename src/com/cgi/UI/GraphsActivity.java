@@ -51,7 +51,7 @@ public class GraphsActivity extends Activity {
     /* Threads */
 	private Handler handler = new Handler();
 	private Runnable runnable;
-	private int refreshInterval = 2000;
+	private int refreshInterval = 1000;
 	private Object lock = new Object();
 	
 	/* Data */
@@ -156,8 +156,8 @@ public class GraphsActivity extends Activity {
         	viewport.setMaxX(values_count);
         }
         viewport.setYAxisBoundsManual(true);
-        viewport.setMinY(20);
-        viewport.setMaxY(40);
+        viewport.setMinY(15);
+        viewport.setMaxY(35);
         graph.getSecondScale().setMinY(0);
         graph.getSecondScale().setMaxY(100);
         /* Legend */

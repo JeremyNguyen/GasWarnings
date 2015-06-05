@@ -45,8 +45,8 @@ public class UIHelper {
 	
 	public static void ipConfigDialog(final Context context){
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-		alertDialog.setTitle("Setting Arduino IP");
-		alertDialog.setMessage("Enter Arduino's IP (displayed in serial monitor)");
+		alertDialog.setTitle("Setting Arduino URL");
+		alertDialog.setMessage("Enter Arduino's URL (192.168.240.1/arduino/measures)");
 		final EditText input = new EditText(context);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,

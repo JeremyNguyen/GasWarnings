@@ -44,7 +44,7 @@ public class WarningsService extends Service {
 	private WarningsDAO warningsDAO = new WarningsDAO(this);
 	
 	/* Threads */
-	private int requestsInterval = 2000;
+	private int requestsInterval = 1000;
 	private Handler handler = new Handler();
 	
 	/* Periodic http requests */
