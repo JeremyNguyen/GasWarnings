@@ -55,7 +55,7 @@ public class UIHelper {
 		alertDialog.setView(input);
 		alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				String ip = input.getText().toString();
+				String ip = input.getText().toString().trim();
 				ip = "http://" + ip;
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 				SharedPreferences.Editor editor = preferences.edit();

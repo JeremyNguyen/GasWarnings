@@ -112,6 +112,9 @@ public class WarningsService extends Service {
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		ip_arduino = preferences.getString("arduino_ip", "null");
 		Log.d("SERVICE","ip : "+ip_arduino);
+		if(ip_arduino.equals("null")){
+			ip_arduino = "http://192.168.240.1/arduino/measures";
+		}
 		entryDAO.open();
 		warningsDAO.open();
 		DAO_closed = false;
