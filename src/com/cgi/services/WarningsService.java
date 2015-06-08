@@ -169,7 +169,7 @@ public class WarningsService extends Service {
 				id_gas = Integer.parseInt(split2[1]);
 			}
 		}
-		Log.d("SERVICE","RECEIVED temp = "+temperature+", gas = "+gas+", IDs = ("+id_temp+","+id_gas+")");
+		Log.d("SERVICE","Received temp = "+temperature+", gas = "+gas+", IDs = ("+id_temp+","+id_gas+")");
 		
 		float last_gas = entryDAO.selectLastGas(id_gas);
 		Date now = new Date();
