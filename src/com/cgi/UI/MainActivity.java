@@ -76,14 +76,14 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent warnings_service = new Intent(MainActivity.this, WarningsService.class);
-				// if service is on we stop it
+				// if service is on then stop it
 				if(service_state){
 					button_service.setText(R.string.activity_main_service_turnOn);
 					button_service.setBackgroundResource(R.drawable.green_button);
 					service_state = false;
 					stopService(warnings_service);
 				}
-				// else we start it
+				// else start it
 				else{
 					button_service.setText(R.string.activity_main_service_turnOff);
 					button_service.setBackgroundResource(R.drawable.red_button);
